@@ -59,7 +59,7 @@ module ProductInventory
     end
     puts displayed_products
   end
-  
+
   def update_product_quantity product
     puts "You have #{product[:quantity]} units of #{product[:name]} left, enter the quantity of this product you want to load"
     quantity = gets.chomp.to_i
@@ -78,7 +78,7 @@ module ProductInventory
       puts "This isn't a valid product id, please vend again and select a valid product in stock"
     end
   end
-  
+
   def update_product_inventory product_id
     @products[product_id][:quantity] -= 1
   end
