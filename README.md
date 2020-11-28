@@ -99,12 +99,11 @@ Returning the correct amount of change to the user was also something, as I work
 This took about 2-3 hours, but here are things I'd have thought to include if I spent more time;
 
 - This definitely needs more testing. 
-- It could also accept more dynamic inputs.
-- There's a need to allow users load products that do not exist on the initial list.
+- It could accept more dynamic inputs.
+- Users should be able to load products that do not exist on the initial list.
 - And also get the opportunity to update the amount they pay for products, if this is insufficient.
 - There should be a more interesting way to handle a situation where there is no/insufficient change available, this could be an option if a refund isn't what the user wants.
 - And a lot more testing.
-- Error handling could also be better and properly thought through given more time.
-
+- Error handling could be done in a better way.
 
 
