@@ -8,7 +8,7 @@ describe 'product_inventory' do
 	  @test_product_inventory.extend(ProductInventory)
 	  @test_product_inventory.initialize_product_inventory
   end
-  
+
   describe '#initialize_product_inventory' do
     it 'when the product inventory is initialized, each product item should have a name' do
       expect(@test_product_inventory.products["001"][:name]).to eq "Sprite"
@@ -21,12 +21,12 @@ describe 'product_inventory' do
     it 'when the product inventory is initialized, each product item should have a quantity of zero' do
       expect(@test_product_inventory.products["001"][:quantity]).to eq 0
     end
-      
+
   end
 
   describe '#load_product_inventory' do
     it 'when called and 3 is the input, each product item should have a quantity of 3' do
-      
+
       expect(@test_product_inventory.products["001"][:quantity]).to eq 0
 
       allow_any_instance_of(Object).to receive(:gets).and_return "3"
@@ -48,4 +48,5 @@ describe 'product_inventory' do
       expect(@test_product_inventory.products["005"][:quantity]).to eq 4
     end
   end
+
 end

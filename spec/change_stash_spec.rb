@@ -17,6 +17,7 @@ describe 'change_stash' do
     it 'when initialized, each change entry should have a quantity of zero' do
       expect(@test_change_stash.change_stash["2p"]).to eq 0
     end
+      
   end
 
   describe '#load_change_stash' do
@@ -44,4 +45,5 @@ describe 'change_stash' do
       expect(@test_change_stash.change_stash["£2"]).to eq 14
     end
   end
+
 end
