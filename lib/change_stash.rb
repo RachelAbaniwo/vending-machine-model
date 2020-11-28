@@ -50,4 +50,42 @@ module ChangeStash
     puts "#{change_stash_displayed}"
   end
 
+  def change_stash_amount_value change_amount
+    if change_amount[-1] == "p"
+      (change_amount.chop.to_f / 100)
+    else
+      (change_amount[1..-1].to_f)
+    end
+  end
+
+  def expected_change amount_paid, product_amount
+    amount_paid - product_amount
+  end
+
+  def no_change available_change, change_required, amount_paid
+    if available_change == 0.0
+      puts "There is no change available at this time, here's your refund, please vend again and enter an exact or lower amount, or wait for change to be reloaded."
+      puts "Product => none, Refund => #{amount_paid}"
+    elsif available_change < change_required
+      # I feel more logic could get in here some.
+      puts "There is isn't enough change available at this time, here's your refund, please vend again and enter exact amount, or wait for change to be reloaded."
+      puts "Product => none, Refund => #{amount_paid}"
+    end
+  end
+
+  def change_returned_to_customer required_change, amount_paid
+    already_in_customer_change_arr = 0.0
+    while required_change != 0.0
+      change_denomination = find_change_in_stash(required_change)
+      unless change_denomination
+        return no_change(already_in_customer_change_arr, required_change, amount_paid)
+      end
+      # remove change from stash
+      update_stash_after_change(change_denomination)
+      customer_change << change_denomination
+      already_in_customer_change_arr += change_stash_amount_value(change_denomination)
+      required_change = (required_change -= change_stash_amount_value(change_denomination)).round(2)
+    end
+    customer_change
+  end
 end

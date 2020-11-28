@@ -1,5 +1,5 @@
 module ProductInventory
-  attr_accessor :products, :load_product_inventory, :restock_product_inventory, :update_product_inventory, :display_product_inventory
+  attr_accessor :products, :load_product_inventory, :restock_product_inventory, :update_product_inventory, :find_product_and_throw_error, :display_product_inventory
   def initialize_product_inventory
     @products = {
       "001" => { name: "Sprite", price: 1.30, quantity: 0},
@@ -48,5 +48,18 @@ module ProductInventory
       displayed_products << {"Product ID" => product_key}.merge({"Product Name" => product_information[:name], "Product Price" => product_information[:price], "Quantity" => quantity })
     end
     puts displayed_products
+  end
+
+  def find_product_and_throw_error product_id
+    product = @products[product_id]
+    if product
+      if product[:quantity] > 0 
+        product
+      else
+        puts "This item is out of stock, please vend again and select a product in stock."
+      end
+    else
+      puts "This isn't a valid product id, please vend again and select a valid product in stock"
+    end
   end
 end
