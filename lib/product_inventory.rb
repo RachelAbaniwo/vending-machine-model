@@ -1,5 +1,5 @@
 module ProductInventory
-  attr_accessor :products
+  attr_accessor :products, :load_product_inventory, :restock_product_inventory, :update_product_inventory
   def initialize_product_inventory
     @products = {
       "001" => { name: "Sprite", price: 1.30, quantity: 0},
@@ -29,12 +29,15 @@ module ProductInventory
     puts "Select a product you want to restock using its number"
     product_id = gets.chomp
     load_product_inventory(product_id)
-    end
   end
 
   def update_product_quantity product
     puts "enter the quantity of this product you want to load"
     quantity = gets.chomp.to_i
     product[:quantity] += quantity
+  end
+
+  def update_product_inventory product_id
+    @products[product_id][:quantity] -= 1
   end
 end
