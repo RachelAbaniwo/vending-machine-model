@@ -1,5 +1,5 @@
 module ProductInventory
-  attr_accessor :products, :load_product_inventory, :restock_product_inventory, :update_product_inventory
+  attr_accessor :products, :load_product_inventory, :restock_product_inventory, :update_product_inventory, :display_product_inventory
   def initialize_product_inventory
     @products = {
       "001" => { name: "Sprite", price: 1.30, quantity: 0},
@@ -39,5 +39,14 @@ module ProductInventory
 
   def update_product_inventory product_id
     @products[product_id][:quantity] -= 1
+  end
+
+  def display_product_inventory
+    displayed_products = []
+    @products.each do |product_key, product_information|
+      quantity = product_information[:quantity] == 0 ? "Out of Stock" : product_information[:quantity]
+      displayed_products << {"Product ID" => product_key}.merge({"Product Name" => product_information[:name], "Product Price" => product_information[:price], "Quantity" => quantity })
+    end
+    puts displayed_products
   end
 end

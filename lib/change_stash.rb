@@ -1,5 +1,5 @@
 module ChangeStash
-  attr_accessor :change_stash
+  attr_accessor :change_stash, :load_change_stash, :restock_change_stash, :display_change_stash
   def initialize_change_stash
     @change_stash = {
       "£2" => 0,
@@ -40,4 +40,14 @@ module ChangeStash
   def update_stash_after_change change_denomination
     @change_stash[change_denomination] -= 1 if change_denomination
   end
+
+  def display_change_stash
+    change_stash_displayed = []
+    @change_stash.each do |change_stash_key, change_stash_quantity|
+      quantity = change_stash_quantity == 0 ? "none" : change_stash_quantity
+      change_stash_displayed << {change_stash_key => quantity}
+    end
+    puts "#{change_stash_displayed}"
+  end
+
 end
