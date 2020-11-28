@@ -1,5 +1,6 @@
 module ChangeStash
-  attr_accessor :change_stash, :load_change_stash, :restock_change_stash, :display_change_stash
+  attr_accessor :change_stash, :load_change_stash, :restock_change_stash, :display_change_stash, :change_returned_to_customer, :expected_change
+  
   def initialize_change_stash
     @change_stash = {
       "£2" => 0,
@@ -14,31 +15,54 @@ module ChangeStash
   end
 
   def load_change_stash change_amount=nil
-    # initial load
+     # initial load
     unless change_amount
+      puts " "
+      puts "This is what you have currently in your change stash:"
+      puts " "
+      display_change_stash
+      puts "Update items accordingly."
+      puts " "
       @change_stash.each do |change_amount_key, change_amount_quantity|
         update_change_stash(change_amount_key)
       end
+      puts "This what you have in the updated change stash"
+      puts " "
+      display_change_stash
     else
       # change amount exists when it is a reload(restock)
-      update_change_stash(change_amount)
+      puts "Update items accordingly."
+      puts " "
+      update_change_stash(find_change_amount(change_amount))
+      puts "This what you have in the updated change stash"
+      puts " "
+      display_change_stash
     end
   end
 
   def restock_change_stash
+    display_change_stash
+    puts " "
     puts "Select a change amount you want to restock by entering its change amount"
+    puts " "
     change_amount = gets.chomp
-    load_change_stash(change_amount)
+    if find_change_amount(change_amount)
+      load_change_stash(change_amount)
+    end
   end
 
   def update_change_stash change_amount
-    puts "Enter the quantity of this denomination of change you want to load"
+    puts "You have #{@change_stash[change_amount]} units of #{change_amount} left, enter the quantity of this denomination of change you want to load"
     quantity = gets.chomp.to_i
     @change_stash[change_amount] += quantity
   end
 
-  def update_stash_after_change change_denomination
-    @change_stash[change_denomination] -= 1 if change_denomination
+  def find_change_amount change_amount 
+    if @change_stash[change_amount]
+      change_amount
+    else
+      return puts "The denomination entered is not valid, please vend again and enter a denomination from the options."
+    end
   end
 
   def display_change_stash
@@ -47,6 +71,9 @@ module ChangeStash
       quantity = change_stash_quantity == 0 ? "none" : change_stash_quantity
       change_stash_displayed << {change_stash_key => quantity}
     end
+    puts " "
+    puts "This is what you have currently in your change stash:"
+    puts " "
     puts "#{change_stash_displayed}"
   end
 
@@ -61,6 +88,32 @@ module ChangeStash
   def expected_change amount_paid, product_amount
     amount_paid - product_amount
   end
+  
+  def change_returned_to_customer required_change, amount_paid
+    # change returned will be an array of change denominations adding up to customer change
+    already_in_customer_change_arr = 0.0
+    if required_change == 0.0
+      return 0.0
+    end
+    customer_change = []
+    while required_change != 0.0
+      change_denomination = find_change_in_stash(required_change)
+      # check that change is available in our change stash
+      unless change_denomination
+        return no_change(already_in_customer_change_arr, required_change, amount_paid)
+      end
+      # remove change from stash
+      update_stash_after_change(change_denomination)
+      customer_change << change_denomination
+      already_in_customer_change_arr += change_stash_amount_value(change_denomination)
+      required_change = (required_change -= change_stash_amount_value(change_denomination)).round(2)
+    end
+    customer_change
+  end
+  
+  def update_stash_after_change change_denomination
+      @change_stash[change_denomination] -= 1 if change_denomination
+  end
 
   def no_change available_change, change_required, amount_paid
     if available_change == 0.0
@@ -73,19 +126,8 @@ module ChangeStash
     end
   end
 
-  def change_returned_to_customer required_change, amount_paid
-    already_in_customer_change_arr = 0.0
-    while required_change != 0.0
-      change_denomination = find_change_in_stash(required_change)
-      unless change_denomination
-        return no_change(already_in_customer_change_arr, required_change, amount_paid)
-      end
-      # remove change from stash
-      update_stash_after_change(change_denomination)
-      customer_change << change_denomination
-      already_in_customer_change_arr += change_stash_amount_value(change_denomination)
-      required_change = (required_change -= change_stash_amount_value(change_denomination)).round(2)
-    end
-    customer_change
+  def find_change_in_stash required_change
+    @change_stash.find{|amount_denomination, change_quantity| change_stash_amount_value(amount_denomination) <= required_change && change_quantity > 0}.first rescue nil
   end
+
 end
