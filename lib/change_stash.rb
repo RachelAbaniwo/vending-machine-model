@@ -1,6 +1,6 @@
 module ChangeStash
   attr_accessor :change_stash
-  def initializa_change_stash
+  def initialize_change_stash
     @change_stash = {
       "£2" => 0,
       "£1" => 0,
