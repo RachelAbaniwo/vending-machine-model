@@ -24,5 +24,10 @@ class VendingMachine
       quantity = gets.chomp.to_i
       @change_stash[change_amount] += quantity
     end
+
+    # vend
+    puts "Enter the product id of the product you want to purchase"
+      product_id = gets.chomp
+
   end
 end
